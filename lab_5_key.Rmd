@@ -74,3 +74,48 @@ trees_t <- t.test(oak_trees, pine_trees)
 
 The p-value of `r trees_t$p.value` means that there is that percent chance if these are drawn from populations with the same tree height, there is the same percent chance that random samples would have means that are exactly as different as the difference in means that we found. *at least as different as those I found* `r (trees_t$p.value) * 100`% by random chance if they were drawn from populations with the same mean height.
 
+## Example 2
+
+Using the 'mpg' dataset to compare city gas mileage for SUVs and compact cars.
+
+```{r}
+# Create a subset called compact_suv that only contains observations where the class is suv OR compact
+
+compact_suv <- mpg %>%
+  filter(class %in% c("compact", "suv"))
+```
+
+```{r}
+ggplot(data = compact_suv, aes(x = cty)) +
+  geom_histogram(bins = 12) +
+  facet_wrap(~ class)
+
+ggplot(data = compact_suv, aes(sample = cty)) +
+  geom_qq() +
+  facet_wrap(~ class)
+```
+
+```{r}
+car_stats <- compact_suv %>%
+  group_by(class) %>%
+  summarize(mean_city = mean(cty),
+            sd_cty = round(sd(cty), 1),
+            sample_size = n())
+
+car_stats
+```
+```{r}
+compact_sample <- compact_suv %>%
+  filter(class == "compact") %>%
+  pull(cty)
+
+suv_sample <- compact_suv %>%
+  filter(class == "suv") %>%
+  pull(cty)
+
+cars_t <- t.test(compact_sample, suv_sample) 
+```
+
+stats speak: reject the null hypothesis of equal mean city gas mileages
+
+Mean gas mileage for compact cars and SUVs differs significantly. Reject null hypothesis. (t(`r cars_t$paramenter` = `r cars_t$statistic`, p , 0.001, $\alpha$ = 0.05).
