@@ -22,6 +22,7 @@ In this section, we'll learn to use the 't.test()' function as a way to return t
 ## Example 1
 
 Create a mock sample of observation values and find the confidence interval. Then we'll learn how to report that.
+Single t-test tests if mean is = 0 (null hypothesis)
 
 ```{r}
 pika_mass <- c(82, 94, 110, 70, 86, 99, 102, 320)
@@ -46,4 +47,30 @@ Use a single backtick on either side of a lowercase r to create an in-line bit o
 Use control/return over ticks to view value, hovering over.
 
 Mean pika mass at Paiute Pass is `r round(pika_mean, 1)` g $\pm$ `r round(pika_sd, 1)` g (mean $\pm$ 1 standard deviation, n = `r length(pika_mass)`) with a 95% confidence interval of [`r pika_ci$conf.int[1]`], `r pika_ci$conf.int[2]`] g.
+
+# Two sample t-test
+
+Use a two-sample t-test to test the null hypothesis that samples were drawn from populations with the same mean (difference in means = 0).
+
+- H0: Means difference = 0
+- HA: Means difference is NOT = 0
+
+This is a two-sided t-test because no directionality is implied.
+t-tests do not have to have the same $ in each list
+
+## Example 1
+
+```{r}
+oak_trees <- c(29, 19, 22, 30, 35, 16, 20, 7)
+  
+pine_trees <- c(48, 32, 41, 40, 56, 70, 30, 19, 20)
+```
+
+Is there a significant difference in mean heights for oak trees and pine trees?
+
+```{r}
+trees_t <- t.test(oak_trees, pine_trees)
+```
+
+The p-value of `r trees_t$p.value` means that there is that percent chance if these are drawn from populations with the same tree height, there is the same percent chance that random samples would have means that are exactly as different as the difference in means that we found. *at least as different as those I found* `r (trees_t$p.value) * 100`% by random chance if they were drawn from populations with the same mean height.
 
